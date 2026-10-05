@@ -48,9 +48,34 @@ var DEFAULTS = {
   // 상품별 최소 주문 수량 (명함은 수입지일 때 namecardImport)
   minQty: { sticker: 50, namecard: 90, namecardImport: 45, flyer: 10, brochure: 10, coupon: 50, postcard: 10, invite: 10, booklet: 2, envelope: 10, digital: 1 },
   // 원지보다 큰 디지털 출력 (장당 가격, 당일 출고 불가)
-  large: [{ id: 'A2', name: 'A2 420×594', w: 420, h: 594, color: 5000, mono: 2000 }]
+  large: [{ id: 'A2', name: 'A2 420×594', w: 420, h: 594, color: 5000, mono: 2000 }],
+  // 실사출력: ㎡당 단가 · 장당 최소 면적(㎡) · 최소 수량
+  wide: {
+    banner: { name: '현수막', price: 8000, minArea: 1, minQty: 1 },
+    petbanner: { name: '패트배너', price: 15000, minArea: 1, minQty: 1 },
+    yupoSticker: { name: '유포지 스티커', price: 15000, minArea: 0.5, minQty: 1 },
+    calSticker: { name: '캘지 스티커', price: 18000, minArea: 0.5, minQty: 1 },
+    yupoFomex: { name: '유포+포맥스 합지', price: 35000, minArea: 0.5, minQty: 1 },
+    yupoFoam: { name: '유포+폼보드 합지', price: 30000, minArea: 0.5, minQty: 1 },
+    silsa: { name: '실사출력', price: 12000, minArea: 0.5, minQty: 1 }
+  },
+  // 실사 옵션: ㎡당 추가 · 개당 추가
+  wideOpts: {
+    none: { name: '없음', area: 0, piece: 0 },
+    heat: { name: '열재단', area: 0, piece: 0 },
+    eyelet: { name: '아일렛(타공)', area: 0, piece: 2000 },
+    wood: { name: '각목+끈', area: 0, piece: 5000 },
+    standIn: { name: '실내용 거치대', area: 0, piece: 15000 },
+    standOut: { name: '실외용 거치대', area: 0, piece: 25000 },
+    lamiGloss: { name: '유광 코팅', area: 5000, piece: 0 },
+    lamiMatt: { name: '무광 코팅', area: 5000, piece: 0 },
+    fomex3: { name: '포맥스 3mm', area: 0, piece: 0 },
+    fomex5: { name: '포맥스 5mm', area: 5000, piece: 0 }
+  },
+  wideMaxQty: 100
 };
 
+var GROUPS = [['print', '인쇄물'], ['wide', '실사출력']];
 var MIN_NAMES = [['sticker', '스티커'], ['namecard', '명함 (스노우·아트 등)'], ['namecardImport', '명함 (수입지)'], ['flyer', '전단'], ['brochure', '브로슈어'],
   ['coupon', '쿠폰'], ['postcard', '엽서'], ['invite', '초청장'], ['booklet', '책자 (권)'], ['envelope', '봉투'], ['digital', '디지털 출력']];
 
@@ -72,6 +97,24 @@ var PRODUCTS = {
     sizes: [['A6 105×148', 105, 148], ['100×148', 100, 148], ['150×100', 150, 100], ['120×170', 120, 170]] },
   invite: { name: '초청장', unit: '매', qty: 100, paper: 'rendezvous240', sides: 2, coat: false, fold: true, fins: ['score'], note: '접지형은 펼친 크기 기준입니다.',
     sizes: [['2단 접지 · 펼침 200×140', 200, 140, 1], ['2단 접지 · 펼침 210×148', 210, 148, 1], ['카드형 150×100', 150, 100, 0]] },
+  banner: { name: '현수막', kind: 'wide', group: 'wide', unit: '장', qty: 1, note: '가로×세로 실제 크기',
+    sizes: [['5000×900 (가장 많이 쓰는 크기)', 5000, 900], ['3000×900', 3000, 900], ['4000×900', 4000, 900], ['6000×900', 6000, 900], ['1800×900', 1800, 900]],
+    groups: [{ id: 'finish', label: '마감', opts: ['heat', 'eyelet', 'wood'] }] },
+  petbanner: { name: '패트배너', kind: 'wide', group: 'wide', unit: '장', qty: 1,
+    sizes: [['600×1800 (표준)', 600, 1800], ['500×1800', 500, 1800]],
+    groups: [{ id: 'stand', label: '거치대', opts: ['none', 'standIn', 'standOut'] }] },
+  yupoSticker: { name: '유포지 스티커', kind: 'wide', group: 'wide', unit: '장', qty: 1, sizes: [['A2 420×594', 420, 594], ['A1 594×841', 594, 841], ['A0 841×1189', 841, 1189], ['1000×1000', 1000, 1000]],
+    groups: [{ id: 'lami', label: '코팅', opts: ['none', 'lamiGloss', 'lamiMatt'] }] },
+  calSticker: { name: '캘지 스티커', kind: 'wide', group: 'wide', unit: '장', qty: 1, sizes: [['A2 420×594', 420, 594], ['A1 594×841', 594, 841], ['A0 841×1189', 841, 1189], ['1000×1000', 1000, 1000]],
+    groups: [{ id: 'lami', label: '코팅', opts: ['none', 'lamiGloss', 'lamiMatt'] }] },
+  yupoFomex: { name: '유포+포맥스 합지', kind: 'wide', group: 'wide', unit: '장', qty: 1,
+    sizes: [['A2 420×594', 420, 594], ['A1 594×841', 594, 841], ['A0 841×1189', 841, 1189], ['900×1800', 900, 1800]],
+    groups: [{ id: 'thick', label: '두께', opts: ['fomex3', 'fomex5'] }, { id: 'lami', label: '코팅', opts: ['none', 'lamiGloss', 'lamiMatt'] }] },
+  yupoFoam: { name: '유포+폼보드 합지', kind: 'wide', group: 'wide', unit: '장', qty: 1,
+    sizes: [['A2 420×594', 420, 594], ['A1 594×841', 594, 841], ['A0 841×1189', 841, 1189], ['900×1800', 900, 1800]],
+    groups: [{ id: 'lami', label: '코팅', opts: ['none', 'lamiGloss', 'lamiMatt'] }] },
+  silsa: { name: '실사출력', kind: 'wide', group: 'wide', unit: '장', qty: 1, sizes: [['A2 420×594', 420, 594], ['A1 594×841', 594, 841], ['A0 841×1189', 841, 1189], ['1000×1000', 1000, 1000]],
+    groups: [{ id: 'lami', label: '코팅', opts: ['none', 'lamiGloss', 'lamiMatt'] }] },
   booklet: { name: '책자', kind: 'booklet', unit: '권', qty: 50, paper: 'mojo100', coverPaper: 'snow250',
     sizes: [['A5 148×210', 148, 210], ['A4 210×297', 210, 297], ['B5 182×257', 182, 257]] }
 };
@@ -89,7 +132,8 @@ var BASIC = [
   ['cutFee', '재단비 (원)', '건당'],
   ['minOrder', '최소 주문금액 (원)', '이보다 적으면 이 금액으로 계산'],
   ['vat', '부가세 (%)', ''],
-  ['maxQty', '고객 선택 최대 수량', '수량 목록은 최소 수량의 배수로, 이 수량에 가장 가까운 배수까지 나옴']
+  ['maxQty', '고객 선택 최대 수량', '수량 목록은 최소 수량의 배수로, 이 수량에 가장 가까운 배수까지 나옴'],
+  ['wideMaxQty', '실사출력 최대 수량', '실사출력 코너 수량 목록의 끝']
 ];
 
 // 구글 시트 단가표 행: [분류, 코드, 이름, 값1, 값2, 값3, 값4, 설명]
@@ -110,6 +154,8 @@ function sheetRows(cfg) {
     r.push(['봉투인쇄', k[0], k[1], cfg.envPrint[k[0]], '', '', '', k[2]]);
   });
   cfg.large.forEach(function (l) { r.push(['대형출력', l.id, l.name, l.w, l.h, l.color, l.mono, '디지털 출력 큰 사이즈 · 값1 가로 · 값2 세로 · 값3 컬러 장당 · 값4 흑백 장당 (당일 출고 불가)']); });
+  Object.keys(cfg.wide).forEach(function (k) { var w = cfg.wide[k]; r.push(['실사', k, w.name, w.price, w.minArea, w.minQty, '', '값1 ㎡당 단가 · 값2 장당 최소 면적(㎡, 이보다 작아도 이 면적으로 계산) · 값3 최소 수량']); });
+  Object.keys(cfg.wideOpts).forEach(function (k) { var o = cfg.wideOpts[k]; r.push(['실사옵션', k, o.name, o.area, o.piece, '', '', '값1 ㎡당 추가 · 값2 장당 추가']); });
   MIN_NAMES.forEach(function (m) { r.push(['최소수량', m[0], m[1], cfg.minQty[m[0]], '', '', '', '이 수량보다 적으면 주문할 수 없음']); });
   return r;
 }
@@ -156,6 +202,8 @@ function cfgFromRows(rows) {
     else if (cat === '제본') { var b = cfg.binding[code]; if (b) { var bb = num(v[0]), pb = num(v[1]); if (need(bb) && need(pb)) { b.base = bb; b.perBook = pb; } if (name) b.name = name; } }
     else if (cat === '봉투') { var ew = num(v[0]), eh = num(v[1]), ep = num(v[2]); if (need(ew) && need(eh) && need(ep)) envs.push({ id: code || 'env' + idx, name: name || code, w: ew, h: eh, price: ep }); }
     else if (cat === '봉투인쇄') { var e = num(v[0]); if (code in cfg.envPrint && need(e)) cfg.envPrint[code] = e; }
+    else if (cat === '실사') { var wd = cfg.wide[code]; if (wd) { var wp = num(v[0]), wa = num(v[1]), wq = num(v[2]); if (need(wp)) wd.price = wp; if (!isNaN(wa)) wd.minArea = wa; if (!isNaN(wq)) wd.minQty = Math.max(1, wq); if (name) wd.name = name; } }
+    else if (cat === '실사옵션') { var wo = cfg.wideOpts[code]; if (wo) { var oa = num(v[0]), op = num(v[1]); wo.area = isNaN(oa) ? 0 : oa; wo.piece = isNaN(op) ? 0 : op; if (name) wo.name = name; } }
     else if (cat === '최소수량') { var mq = num(v[0]); if (code in DEFAULTS.minQty && need(mq)) cfg.minQty[code] = Math.max(1, mq); }
     else if (cat === '대형출력') { var lw = num(v[0]), lh = num(v[1]), lc = num(v[2]), lm = num(v[3]); if (need(lw) && need(lh) && need(lc)) larges.push({ id: code || 'L' + idx, name: name || code, w: lw, h: lh, color: lc, mono: isNaN(lm) ? lc : lm }); }
   });
@@ -214,13 +262,33 @@ function makeCalc(cfg) {
     return cfg.large.find(function (l) { return (l.w === S.w && l.h === S.h) || (l.w === S.h && l.h === S.w); }) || null;
   }
   function qtyOptions(S) {
-    var mn = minOf(S), n = Math.max(1, Math.round(cfg.maxQty / mn)), out = [];
+    var mx = PRODUCTS[S.product].kind === 'wide' ? cfg.wideMaxQty : cfg.maxQty;
+    var mn = minOf(S), n = Math.max(1, Math.round(mx / mn)), out = [];
     for (var i = 1; i <= n; i++) out.push(mn * i);
     return out;
   }
   function minOf(S) {
+    if (PRODUCTS[S.product].kind === 'wide') return (cfg.wide[S.product] || {}).minQty || 1;
     if (S.product === 'namecard') { var pp = paperById(S.paper, 'general'); return pp && pp.imported ? cfg.minQty.namecardImport : cfg.minQty.namecard; }
     return cfg.minQty[S.product] || 1;
+  }
+
+  function calcWide(p, S) {
+    var d = cfg.wide[S.product];
+    if (!(S.w > 0 && S.h > 0)) return fail('가로·세로 크기를 입력하세요.');
+    if (!(S.qty > 0)) return fail('수량을 1 이상으로 입력하세요.');
+    var real = S.w * S.h / 1e6, area = Math.max(real, d.minArea), r2 = function (x) { return Math.round(x * 100) / 100; };
+    var lines = [[d.name, r2(area) + '㎡ × ' + fmt(S.qty) + '장 × ' + fmt(d.price) + (real < d.minArea ? ' (최소 ' + d.minArea + '㎡ 적용)' : ''), area * S.qty * d.price]];
+    var opts = [S.w + '×' + S.h + 'mm'];
+    (p.groups || []).forEach(function (g) {
+      var o = cfg.wideOpts[S.wopt[g.id]]; if (!o) return;
+      if (S.wopt[g.id] !== 'none') opts.push(o.name);
+      var amt = o.area * area * S.qty + o.piece * S.qty;
+      if (amt) lines.push([g.label + ': ' + o.name, (o.area ? r2(area * S.qty) + '㎡ × ' + fmt(o.area) : '') + (o.area && o.piece ? ' + ' : '') + (o.piece ? fmt(S.qty) + '장 × ' + fmt(o.piece) : ''), amt]);
+    });
+    return finish(lines, { stats: [['장당 면적', r2(real) + '㎡'], ['계산 면적', r2(area * S.qty) + '㎡']], adminStats: [['㎡당 단가', fmt(d.price) + '원']],
+      cap: '면적(㎡) 기준 계산 · 장당 최소 ' + d.minArea + '㎡', spec: d.name + ' ' + S.w + '×' + S.h + 'mm · ' + fmt(S.qty) + p.unit,
+      opts: opts, perLabel: p.unit + '당', qty: S.qty });
   }
 
   function calcLarge(p, S, l) {
@@ -334,6 +402,7 @@ function makeCalc(cfg) {
       var p = PRODUCTS[S.product], mn = minOf(S);
       if (S.qty > 0 && S.qty < mn) return fail('최소 주문 수량은 ' + fmt(mn) + p.unit + '입니다. 수량을 ' + fmt(mn) + p.unit + ' 이상으로 골라 주세요.');
       if (S.qty > 0 && S.qty % mn) return fail('수량은 ' + fmt(mn) + p.unit + ' 단위로 주문할 수 있습니다. ' + fmt(Math.floor(S.qty / mn) * mn || mn) + p.unit + ' 또는 ' + fmt(Math.ceil(S.qty / mn) * mn) + p.unit + '로 골라 주세요.');
+      if (p.kind === 'wide') return calcWide(p, S);
       if (p.kind === 'envelope') return calcEnvelope(p, S);
       if (p.kind === 'booklet') return calcBooklet(p, S);
       return calcStd(p, S);
@@ -348,6 +417,7 @@ function newState(key) {
     pages: 16, binding: 'saddle', coverPaper: p.coverPaper, sepCover: true, coverSides: 2 };
   if (p.sizes) { S.w = p.sizes[0][1]; S.h = p.sizes[0][2]; }
   if (key === 'namecard' || key === 'postcard') S.coat = 1;
+  if (p.kind === 'wide') { S.wopt = {}; p.groups.forEach(function (g) { S.wopt[g.id] = g.opts[0]; }); }
   return S;
 }
 
@@ -365,7 +435,9 @@ var CSS = [
 '.pq h2,.pq p,.pq dl,.pq dd,.pq table{margin:0}',
 '.pq [hidden]{display:none!important}',
 '.pq-notice{background:var(--pq-warn-soft);color:var(--pq-warn);border-radius:8px;padding:10px 14px;font-size:14px;margin-bottom:14px}',
-'.pq-products{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}',
+'.pq-products{display:flex;flex-direction:column;gap:10px;margin-bottom:16px}',
+'.pq-pgroup{display:flex;flex-wrap:wrap;gap:8px;align-items:center}',
+'.pq-plabel{font-size:12px;font-weight:700;color:var(--pq-muted);min-width:64px}',
 '.pq-products button{font:inherit;font-size:14px;font-weight:500;border:1px solid var(--pq-line);background:var(--pq-surface);color:var(--pq-ink);padding:7px 14px;border-radius:999px;cursor:pointer;line-height:1.3;margin:0}',
 '.pq-products button:hover{border-color:var(--pq-accent)}',
 '.pq-products button[aria-pressed="true"]{background:var(--pq-accent);border-color:var(--pq-accent);color:#fff}',
@@ -444,8 +516,10 @@ function mount(root) {
   var form = $('form'), result = $('.pq-result'), products = $('.pq-products'), notice = $('.pq-notice');
 
   function renderProducts() {
-    products.innerHTML = Object.keys(PRODUCTS).map(function (k) {
-      return '<button type="button" data-p="' + k + '" aria-pressed="' + (k === S.product) + '">' + PRODUCTS[k].name + '</button>';
+    products.innerHTML = GROUPS.map(function (g) {
+      return '<div class="pq-pgroup"><span class="pq-plabel">' + g[1] + '</span>' + Object.keys(PRODUCTS).filter(function (k) { return (PRODUCTS[k].group || 'print') === g[0]; }).map(function (k) {
+        return '<button type="button" data-p="' + k + '" aria-pressed="' + (k === S.product) + '">' + PRODUCTS[k].name + '</button>';
+      }).join('') + '</div>';
     }).join('');
   }
   function seg(name, label, opts, val) {
@@ -481,6 +555,13 @@ function mount(root) {
 
   function renderForm() {
     var p = PRODUCTS[S.product], h = '<div class="pq-fields">';
+    if (p.kind === 'wide') {
+      h += sizeFields(p);
+      h += qtyField('수량');
+      p.groups.forEach(function (g) { h += select('wo_' + g.id, g.label, g.opts.map(function (k) { return [k, cfg.wideOpts[k].name]; }), S.wopt[g.id]); });
+      h += '<p class="pq-note pq-full">면적(㎡) 기준으로 계산합니다. 장당 ' + cfg.wide[S.product].minArea + '㎡보다 작으면 ' + cfg.wide[S.product].minArea + '㎡로 계산해요.</p>';
+      form.innerHTML = h + '</div>'; return;
+    }
     if (p.kind === 'envelope') {
       if (S.env >= cfg.envelopes.length) S.env = 0;
       h += select('env', '봉투 종류', cfg.envelopes.map(function (e, i) { return [i, e.name + ' (' + e.w + '×' + e.h + ')']; }), S.env, 'pq-full');
@@ -529,6 +610,7 @@ function mount(root) {
     ['paper', 'color', 'cut', 'binding', 'coverPaper'].forEach(function (k) { if (fd.has(k)) S[k] = fd.get(k); });
     if (p.kind === 'booklet' && S.binding !== 'perfect') { var cb = form.querySelector('[name=sepCover]'); S.sepCover = !!(cb && cb.checked); }
     if (p.fins) S.fins = fd.getAll('fin');
+    if (p.groups) p.groups.forEach(function (g) { if (fd.has('wo_' + g.id)) S.wopt[g.id] = fd.get('wo_' + g.id); });
   }
 
   function onForm(e) {
@@ -628,7 +710,7 @@ function mount(root) {
   function applyCfg(next) {
     cfg = next; C = makeCalc(cfg);
     var p = PRODUCTS[S.product];
-    if (p.kind !== 'envelope') {
+    if (p.kind !== 'envelope' && p.kind !== 'wide') {
       var sk = p.kind === 'sticker' ? 'sticker' : 'general';
       if (!cfg.papers.some(function (x) { return x.id === S.paper && x.sheet === sk; })) S.paper = (C.papersFor(sk)[0] || {}).id;
     }
@@ -659,7 +741,7 @@ function mount(root) {
     var b = e.target.closest('button'); if (!b) return;
     S = newState(b.getAttribute('data-p'));
     var p = PRODUCTS[S.product];
-    if (p.kind !== 'envelope') {
+    if (p.kind !== 'envelope' && p.kind !== 'wide') {
       var sk = p.kind === 'sticker' ? 'sticker' : 'general';
       if (!cfg.papers.some(function (x) { return x.id === S.paper && x.sheet === sk; })) S.paper = (C.papersFor(sk)[0] || {}).id;
       if (p.kind === 'booklet' && !cfg.papers.some(function (x) { return x.id === S.coverPaper; })) S.coverPaper = S.paper;
