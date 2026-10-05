@@ -13,7 +13,7 @@
 var DEFAULTS = {
   sheets: { general: { name: '일반 용지', w: 325, h: 460 }, sticker: { name: '스티커 용지', w: 330, h: 535 } },
   margin: 5, bleed: 2, stickerGap: 3, lossRate: 2, lossMin: 2,
-  setupFee: 3000, cutFee: 2000, minOrder: 10000, vat: 10,
+  setupFee: 3000, cutFee: 2000, minOrder: 10000, vat: 10, maxQty: 1000,
   papers: [
     { id: 'mojo100', name: '모조 100g', sheet: 'general', price: 60, thick: 0.11 },
     { id: 'art150', name: '아트 150g', sheet: 'general', price: 90, thick: 0.13 },
@@ -51,12 +51,6 @@ var DEFAULTS = {
   large: [{ id: 'A2', name: 'A2 420×594', w: 420, h: 594, color: 5000, mono: 2000 }]
 };
 
-// 고객이 누르는 수량 버튼 (최소 수량보다 작은 값은 자동으로 빠짐)
-var QTY_PRESETS = {
-  sticker: [50, 100, 200, 500, 1000], namecard: [45, 90, 200, 500, 1000], flyer: [10, 50, 100, 500, 1000],
-  brochure: [10, 50, 100, 300, 500], coupon: [50, 100, 300, 500, 1000], postcard: [10, 50, 100, 200, 500],
-  invite: [10, 30, 50, 100, 200], booklet: [2, 10, 20, 50, 100], envelope: [10, 100, 300, 500, 1000], digital: [1, 5, 10, 50, 100]
-};
 var MIN_NAMES = [['sticker', '스티커'], ['namecard', '명함 (스노우·아트 등)'], ['namecardImport', '명함 (수입지)'], ['flyer', '전단'], ['brochure', '브로슈어'],
   ['coupon', '쿠폰'], ['postcard', '엽서'], ['invite', '초청장'], ['booklet', '책자 (권)'], ['envelope', '봉투'], ['digital', '디지털 출력']];
 
@@ -94,7 +88,8 @@ var BASIC = [
   ['setupFee', '작업 기본료 (원)', '건당'],
   ['cutFee', '재단비 (원)', '건당'],
   ['minOrder', '최소 주문금액 (원)', '이보다 적으면 이 금액으로 계산'],
-  ['vat', '부가세 (%)', '']
+  ['vat', '부가세 (%)', ''],
+  ['maxQty', '고객 선택 최대 수량', '수량 목록은 최소 수량의 배수로, 이 수량에 가장 가까운 배수까지 나옴']
 ];
 
 // 구글 시트 단가표 행: [분류, 코드, 이름, 값1, 값2, 값3, 값4, 설명]
@@ -218,6 +213,11 @@ function makeCalc(cfg) {
     if (S.product !== 'digital') return null;
     return cfg.large.find(function (l) { return (l.w === S.w && l.h === S.h) || (l.w === S.h && l.h === S.w); }) || null;
   }
+  function qtyOptions(S) {
+    var mn = minOf(S), n = Math.max(1, Math.round(cfg.maxQty / mn)), out = [];
+    for (var i = 1; i <= n; i++) out.push(mn * i);
+    return out;
+  }
   function minOf(S) {
     if (S.product === 'namecard') { var pp = paperById(S.paper, 'general'); return pp && pp.imported ? cfg.minQty.namecardImport : cfg.minQty.namecard; }
     return cfg.minQty[S.product] || 1;
@@ -329,10 +329,11 @@ function makeCalc(cfg) {
   }
 
   return {
-    papersFor: papersFor, sizesOf: sizesOf, largeOf: largeOf, minOf: minOf,
+    papersFor: papersFor, sizesOf: sizesOf, largeOf: largeOf, minOf: minOf, qtyOptions: qtyOptions,
     run: function (S) {
       var p = PRODUCTS[S.product], mn = minOf(S);
       if (S.qty > 0 && S.qty < mn) return fail('최소 주문 수량은 ' + fmt(mn) + p.unit + '입니다. 수량을 ' + fmt(mn) + p.unit + ' 이상으로 골라 주세요.');
+      if (S.qty > 0 && S.qty % mn) return fail('수량은 ' + fmt(mn) + p.unit + ' 단위로 주문할 수 있습니다. ' + fmt(Math.floor(S.qty / mn) * mn || mn) + p.unit + ' 또는 ' + fmt(Math.ceil(S.qty / mn) * mn) + p.unit + '로 골라 주세요.');
       if (p.kind === 'envelope') return calcEnvelope(p, S);
       if (p.kind === 'booklet') return calcBooklet(p, S);
       return calcStd(p, S);
@@ -392,6 +393,7 @@ var CSS = [
 '.pq-checks label{display:flex;align-items:center;gap:6px;font-size:14px;cursor:pointer;margin:0}',
 '.pq-checks input{accent-color:var(--pq-accent);width:16px;height:16px;margin:0}',
 '.pq-qty{display:flex;flex-wrap:wrap;gap:6px;align-items:center}',
+'.pq .pq-qty select{width:auto;min-width:140px;flex:0 0 auto}',
 '.pq-qty button{font:inherit;font-size:14px;border:1px solid var(--pq-line);background:var(--pq-field);color:var(--pq-ink);border-radius:6px;padding:6px 12px;cursor:pointer;margin:0;line-height:1.3}',
 '.pq-qty button[aria-pressed="true"]{border-color:var(--pq-accent);background:var(--pq-soft);font-weight:600}',
 '.pq .pq-qty input[type=number]{width:110px;flex:0 0 auto}',
@@ -465,13 +467,15 @@ function mount(root) {
       '<input type="number" id="pq-f-h" name="h" min="1" value="' + S.h + '" aria-label="세로 mm"></div></div>';
   }
   function qtyField(label) {
-    var p = PRODUCTS[S.product], mn = C.minOf(S);
-    var pre = (QTY_PRESETS[S.product] || []).filter(function (q) { return q >= mn; });
-    if (pre.indexOf(mn) < 0) pre.unshift(mn);
-    return '<div class="pq-field pq-full"><label class="pq-lbl" for="pq-f-qty">' + label + '</label><div class="pq-qty">' +
-      pre.map(function (q) { return '<button type="button" data-q="' + q + '" aria-pressed="' + (q === S.qty) + '">' + fmt(q) + p.unit + '</button>'; }).join('') +
-      '<input type="number" id="pq-f-qty" name="qty" min="' + mn + '" step="1" value="' + S.qty + '" inputmode="numeric" aria-label="수량 직접 입력"></div>' +
-      '<small>최소 ' + fmt(mn) + p.unit + '부터 · 원하는 수량을 직접 입력해도 됩니다</small></div>';
+    var p = PRODUCTS[S.product], mn = C.minOf(S), opts = C.qtyOptions(S), mx = opts[opts.length - 1];
+    if (!(S.qty >= mn) || S.qty % mn) S.qty = Math.max(mn, Math.round((S.qty || mn) / mn) * mn);
+    if (!ADMIN && S.qty > mx) S.qty = mx;
+    var sel = '<select id="pq-f-qty" name="' + (ADMIN ? 'qtysel' : 'qty') + '">' +
+      (opts.indexOf(S.qty) < 0 ? '<option value="" selected>직접 입력 ' + fmt(S.qty) + p.unit + '</option>' : '') +
+      opts.map(function (q) { return '<option value="' + q + '"' + (q === S.qty ? ' selected' : '') + '>' + fmt(q) + p.unit + '</option>'; }).join('') + '</select>';
+    return '<div class="pq-field pq-full"><label class="pq-lbl" for="pq-f-qty">' + label + '</label><div class="pq-qty">' + sel +
+      (ADMIN ? '<input type="number" id="pq-f-qtyin" name="qty" min="' + mn + '" step="' + mn + '" value="' + S.qty + '" inputmode="numeric" aria-label="수량 직접 입력">' : '') +
+      '</div><small>' + fmt(mn) + p.unit + ' 단위 · 최대 ' + fmt(mx) + p.unit + (ADMIN ? ' (관리자는 더 큰 수량도 직접 입력 가능)' : ' · 더 많은 수량은 상담해 주세요') + '</small></div>';
   }
   function paperOpts(sheet) { return C.papersFor(sheet).map(function (x) { return [x.id, x.name]; }); }
 
@@ -529,6 +533,8 @@ function mount(root) {
 
   function onForm(e) {
     var t = e.target, p = PRODUCTS[S.product], sizes = C.sizesOf(p), wasLarge = !!C.largeOf(S);
+    if (t.name === 'qtysel' && t.value) { var qi = form.querySelector('#pq-f-qtyin'); if (qi) qi.value = t.value; }
+    if (t.name === 'qty' && ADMIN) { var qs = form.querySelector('#pq-f-qty'); if (qs) qs.value = String(+t.value); }
     if (t.name === 'size' && t.value !== 'custom') {
       var s = sizes[+t.value]; $('#pq-f-w').value = s[1]; $('#pq-f-h').value = s[2];
       if (s[3] !== undefined && $('#pq-f-folds')) $('#pq-f-folds').value = s[3];
@@ -541,12 +547,7 @@ function mount(root) {
     readForm();
     if (e.type === 'change' && (t.name === 'binding' || t.name === 'sepCover' || (t.name === 'paper' && S.product === 'namecard'))) renderForm();
     else if (wasLarge !== !!C.largeOf(S)) renderForm();
-    if (t.name === 'qty') markQty();
     renderResult();
-  }
-  function markQty() {
-    var b = form.querySelectorAll('[data-q]');
-    for (var i = 0; i < b.length; i++) b[i].setAttribute('aria-pressed', String(+b[i].getAttribute('data-q') === S.qty));
   }
 
   function renderResult() {
@@ -666,11 +667,6 @@ function mount(root) {
     renderProducts(); renderForm(); renderResult();
   });
   form.addEventListener('submit', function (e) { e.preventDefault(); });
-  form.addEventListener('click', function (e) {
-    var b = e.target.closest('[data-q]'); if (!b) return;
-    var inp = form.querySelector('#pq-f-qty'); if (inp) inp.value = b.getAttribute('data-q');
-    readForm(); markQty(); renderResult();
-  });
   form.addEventListener('input', onForm);
   form.addEventListener('change', onForm);
   result.addEventListener('click', function (e) {

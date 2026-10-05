@@ -4,5 +4,5 @@
 
 ```html
 <div id="print-quote" data-mode="customer" data-sheet="구글시트_CSV_주소"></div>
-<script src="https://cdn.jsdelivr.net/gh/pasitongtong/print-quote@v2/print-quote.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/pasitongtong/print-quote@v3/print-quote.js"></script>
 ```
