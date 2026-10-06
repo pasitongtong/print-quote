@@ -287,7 +287,7 @@ function makeCalc(cfg) {
       if (amt) lines.push([g.label + ': ' + o.name, (o.area ? r2(area * S.qty) + '㎡ × ' + fmt(o.area) : '') + (o.area && o.piece ? ' + ' : '') + (o.piece ? fmt(S.qty) + '장 × ' + fmt(o.piece) : ''), amt]);
     });
     return finish(lines, { stats: [['장당 면적', r2(real) + '㎡'], ['계산 면적', r2(area * S.qty) + '㎡']], adminStats: [['㎡당 단가', fmt(d.price) + '원']],
-      cap: '면적(㎡) 기준 계산 · 장당 최소 ' + d.minArea + '㎡', spec: d.name + ' ' + S.w + '×' + S.h + 'mm · ' + fmt(S.qty) + p.unit,
+      cap: '면적(㎡) 기준 계산 · 장당 최소 ' + d.minArea + '㎡', warn: '실사출력은 당일 출고가 안 됩니다. 출고일은 상담 후 안내해 드립니다.', spec: d.name + ' ' + S.w + '×' + S.h + 'mm · ' + fmt(S.qty) + p.unit,
       opts: opts, perLabel: p.unit + '당', qty: S.qty });
   }
 
@@ -559,7 +559,7 @@ function mount(root) {
       h += sizeFields(p);
       h += qtyField('수량');
       p.groups.forEach(function (g) { h += select('wo_' + g.id, g.label, g.opts.map(function (k) { return [k, cfg.wideOpts[k].name]; }), S.wopt[g.id]); });
-      h += '<p class="pq-note pq-full">면적(㎡) 기준으로 계산합니다. 장당 ' + cfg.wide[S.product].minArea + '㎡보다 작으면 ' + cfg.wide[S.product].minArea + '㎡로 계산해요.</p>';
+      h += '<p class="pq-note pq-full"><b>실사출력은 당일 출고가 안 됩니다.</b> 출고일은 상담 후 안내해 드립니다.<br>면적(㎡) 기준으로 계산합니다. 장당 ' + cfg.wide[S.product].minArea + '㎡보다 작으면 ' + cfg.wide[S.product].minArea + '㎡로 계산해요.</p>';
       form.innerHTML = h + '</div>'; return;
     }
     if (p.kind === 'envelope') {
