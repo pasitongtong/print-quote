@@ -46,7 +46,7 @@ var DEFAULTS = {
   ],
   envPrint: { color: 150, mono: 60, plate: 5000 },
   // 상품별 최소 주문 수량 (명함은 수입지일 때 namecardImport)
-  minQty: { sticker: 50, namecard: 90, namecardImport: 45, flyer: 10, brochure: 10, coupon: 50, postcard: 10, invite: 10, booklet: 2, envelope: 10, digital: 1 },
+  minQty: { uvdtf: 1, canvas: 1, sticker: 50, namecard: 90, namecardImport: 45, flyer: 10, brochure: 10, coupon: 50, postcard: 10, invite: 10, booklet: 2, envelope: 10, digital: 1 },
   // 원지보다 큰 디지털 출력 (장당 가격, 당일 출고 불가)
   large: [{ id: 'A2', name: 'A2 420×594', w: 420, h: 594, color: 5000, mono: 2000 }],
   // 실사출력: ㎡당 단가 · 장당 최소 면적(㎡) · 최소 수량
@@ -72,11 +72,29 @@ var DEFAULTS = {
     fomex3: { name: '포맥스 3mm', area: 0, piece: 0 },
     fomex5: { name: '포맥스 5mm', area: 5000, piece: 0 }
   },
-  wideMaxQty: 100
+  wideMaxQty: 100,
+  // 사이즈마다 가격이 정해진 상품 (장/개당, 부가세 별도)
+  sized: {
+    uvdtf: [
+      { id: 'A4', name: 'A4 210×297', w: 210, h: 297, price: 15000 },
+      { id: 'A3', name: 'A3 297×420', w: 297, h: 420, price: 25000 }
+    ],
+    // 캔버스: 기성품 캔버스 완제품 UV 출력, 캔버스 금액 포함 (바탕화면 '캔버스 출력금액.txt', 부가세 포함가 ÷ 1.1)
+    canvas: [
+      { id: 'mini', name: '미니 10×10cm', w: 100, h: 100, price: 8000 },
+      { id: 'S3', name: 'S3호 22×22cm', w: 220, h: 220, price: 10000 },
+      { id: 'F3', name: 'F3호 22×27.3cm', w: 220, h: 273, price: 13000 },
+      { id: 'F6', name: 'F6호 31.8×40.9cm', w: 318, h: 409, price: 20000 },
+      { id: 'S8', name: 'S8호 37.9×37.9cm', w: 379, h: 379, price: 23000 },
+      { id: 'F10', name: 'F10호 45.5×53cm', w: 455, h: 530, price: 27000 },
+      { id: 'F20', name: 'F20호 60.6×72.7cm', w: 606, h: 727, price: 33000 },
+      { id: 'P20', name: 'P20호 53×72.7cm', w: 530, h: 727, price: 33000 }
+    ]
+  }
 };
 
 var GROUPS = [['print', '인쇄물'], ['wide', '실사출력']];
-var MIN_NAMES = [['sticker', '스티커'], ['namecard', '명함 (스노우·아트 등)'], ['namecardImport', '명함 (수입지)'], ['flyer', '전단'], ['brochure', '브로슈어'],
+var MIN_NAMES = [['uvdtf', 'UV DTF 스티커'], ['canvas', '캔버스'], ['sticker', '스티커'], ['namecard', '명함 (스노우·아트 등)'], ['namecardImport', '명함 (수입지)'], ['flyer', '전단'], ['brochure', '브로슈어'],
   ['coupon', '쿠폰'], ['postcard', '엽서'], ['invite', '초청장'], ['booklet', '책자 (권)'], ['envelope', '봉투'], ['digital', '디지털 출력']];
 
 var PRODUCTS = {
@@ -86,6 +104,7 @@ var PRODUCTS = {
     sizes: [['일반 90×50', 90, 50], ['86×52', 86, 52], ['90×55', 90, 55]] },
   sticker: { name: '스티커', kind: 'sticker', unit: '매', qty: 500, paper: 'stkArt', sides: 1, coat: false, fold: false, fins: ['stkCoat'],
     sizes: [['원형 Ø50', 50, 50], ['원형 Ø30', 30, 30], ['사각 60×40', 60, 40], ['사각 90×50', 90, 50], ['A4 통판 210×297', 210, 297]] },
+  uvdtf: { name: 'UV DTF 스티커', kind: 'sized', unit: '장', qty: 1 },
   flyer: { name: '전단', unit: '매', qty: 500, paper: 'art150', sides: 1, coat: true, fold: true, fins: [],
     sizes: [['A4 210×297', 210, 297], ['A5 148×210', 148, 210], ['B5 182×257', 182, 257], ['A3 297×420', 297, 420]] },
   brochure: { name: '브로슈어', unit: '매', qty: 300, paper: 'art150', sides: 2, coat: true, fold: true, fins: ['score'], note: '규격은 펼친 크기 기준입니다.',
@@ -115,6 +134,9 @@ var PRODUCTS = {
     groups: [{ id: 'lami', label: '코팅', opts: ['none', 'lamiGloss', 'lamiMatt'] }] },
   silsa: { name: '실사출력', kind: 'wide', group: 'wide', unit: '장', qty: 1, sizes: [['A2 420×594', 420, 594], ['A1 594×841', 594, 841], ['A0 841×1189', 841, 1189], ['1000×1000', 1000, 1000]],
     groups: [{ id: 'lami', label: '코팅', opts: ['none', 'lamiGloss', 'lamiMatt'] }] },
+  canvas: { name: '캔버스', kind: 'sized', group: 'wide', unit: '개', qty: 1,
+    warn: '캔버스는 제작 기간이 3~4일 걸립니다 (완성 디자인 기준). 배송비는 별도입니다.',
+    note: '기성품 캔버스 완제품에 UV 출력합니다. 캔버스 값이 포함된 가격입니다.' },
   booklet: { name: '책자', kind: 'booklet', unit: '권', qty: 50, paper: 'mojo100', coverPaper: 'snow250',
     sizes: [['A5 148×210', 148, 210], ['A4 210×297', 210, 297], ['B5 182×257', 182, 257]] }
 };
@@ -156,6 +178,7 @@ function sheetRows(cfg) {
   cfg.large.forEach(function (l) { r.push(['대형출력', l.id, l.name, l.w, l.h, l.color, l.mono, '디지털 출력 큰 사이즈 · 값1 가로 · 값2 세로 · 값3 컬러 장당 · 값4 흑백 장당 (당일 출고 불가)']); });
   Object.keys(cfg.wide).forEach(function (k) { var w = cfg.wide[k]; r.push(['실사', k, w.name, w.price, w.minArea, w.minQty, '', '값1 ㎡당 단가 · 값2 장당 최소 면적(㎡, 이보다 작아도 이 면적으로 계산) · 값3 최소 수량']); });
   Object.keys(cfg.wideOpts).forEach(function (k) { var o = cfg.wideOpts[k]; r.push(['실사옵션', k, o.name, o.area, o.piece, '', '', '값1 ㎡당 추가 · 값2 장당 추가']); });
+  Object.keys(cfg.sized).forEach(function (k) { cfg.sized[k].forEach(function (z) { r.push(['사이즈단가', k + '_' + z.id, z.name, z.price, z.w, z.h, '', '코드 앞부분 = 상품(uvdtf·canvas) · 값1 장(개)당 단가(부가세 별도) · 값2 가로mm · 값3 세로mm · 행 추가 가능']); }); });
   MIN_NAMES.forEach(function (m) { r.push(['최소수량', m[0], m[1], cfg.minQty[m[0]], '', '', '', '이 수량보다 적으면 주문할 수 없음']); });
   return r;
 }
@@ -186,7 +209,7 @@ function num(v) {
 
 // 시트 행 → 설정. 빠지거나 잘못된 값은 기본값을 그대로 둡니다.
 function cfgFromRows(rows) {
-  var cfg = clone(DEFAULTS), papers = [], envs = [], larges = [], warn = [];
+  var cfg = clone(DEFAULTS), papers = [], envs = [], larges = [], sized = {}, warn = [];
   rows.forEach(function (r, idx) {
     var cat = (r[0] || '').trim(), code = (r[1] || '').trim(), name = (r[2] || '').trim();
     var v = [r[3], r[4], r[5], r[6]];
@@ -204,12 +227,17 @@ function cfgFromRows(rows) {
     else if (cat === '봉투인쇄') { var e = num(v[0]); if (code in cfg.envPrint && need(e)) cfg.envPrint[code] = e; }
     else if (cat === '실사') { var wd = cfg.wide[code]; if (wd) { var wp = num(v[0]), wa = num(v[1]), wq = num(v[2]); if (need(wp)) wd.price = wp; if (!isNaN(wa)) wd.minArea = wa; if (!isNaN(wq)) wd.minQty = Math.max(1, wq); if (name) wd.name = name; } }
     else if (cat === '실사옵션') { var wo = cfg.wideOpts[code]; if (wo) { var oa = num(v[0]), op = num(v[1]); wo.area = isNaN(oa) ? 0 : oa; wo.piece = isNaN(op) ? 0 : op; if (name) wo.name = name; } }
+    else if (cat === '사이즈단가') {
+      var us = code.indexOf('_'), pk = us > 0 ? code.slice(0, us) : '', zp = num(v[0]), zw = num(v[1]), zh = num(v[2]);
+      if (pk in DEFAULTS.sized && need(zp)) (sized[pk] = sized[pk] || []).push({ id: code.slice(us + 1), name: name || code, w: isNaN(zw) ? 0 : zw, h: isNaN(zh) ? 0 : zh, price: zp });
+    }
     else if (cat === '최소수량') { var mq = num(v[0]); if (code in DEFAULTS.minQty && need(mq)) cfg.minQty[code] = Math.max(1, mq); }
     else if (cat === '대형출력') { var lw = num(v[0]), lh = num(v[1]), lc = num(v[2]), lm = num(v[3]); if (need(lw) && need(lh) && need(lc)) larges.push({ id: code || 'L' + idx, name: name || code, w: lw, h: lh, color: lc, mono: isNaN(lm) ? lc : lm }); }
   });
   if (papers.length) cfg.papers = papers;
   if (envs.length) cfg.envelopes = envs;
   if (larges.length) cfg.large = larges;
+  Object.keys(sized).forEach(function (k) { cfg.sized[k] = sized[k]; });
   return { cfg: cfg, warn: warn };
 }
 
@@ -239,10 +267,10 @@ function makeCalc(cfg) {
     if (f.piece) parts.push(fmt(qty) + '개 × ' + fmt(f.piece));
     return [label || f.name, parts.join(' + '), f.base + f.sheet * sheets + f.piece * qty];
   }
-  function finish(lines, extra) {
+  function finish(lines, extra, noMin) {
     lines = lines.filter(Boolean);
     var sub = lines.reduce(function (s, l) { return s + l[2]; }, 0);
-    if (sub < cfg.minOrder) { lines.push(['최소 주문금액 보정', '최소 ' + fmt(cfg.minOrder) + '원', cfg.minOrder - sub]); sub = cfg.minOrder; }
+    if (!noMin && sub < cfg.minOrder) { lines.push(['최소 주문금액 보정', '최소 ' + fmt(cfg.minOrder) + '원', cfg.minOrder - sub]); sub = cfg.minOrder; }
     sub = Math.ceil(sub / 100) * 100;
     var vat = Math.round(sub * cfg.vat / 100);
     var r = { ok: true, lines: lines, sub: sub, vat: vat, total: sub + vat };
@@ -262,7 +290,7 @@ function makeCalc(cfg) {
     return cfg.large.find(function (l) { return (l.w === S.w && l.h === S.h) || (l.w === S.h && l.h === S.w); }) || null;
   }
   function qtyOptions(S) {
-    var mx = PRODUCTS[S.product].kind === 'wide' ? cfg.wideMaxQty : cfg.maxQty;
+    var kd = PRODUCTS[S.product].kind, mx = kd === 'wide' || kd === 'sized' ? cfg.wideMaxQty : cfg.maxQty;
     var mn = minOf(S), n = Math.max(1, Math.round(mx / mn)), out = [];
     for (var i = 1; i <= n; i++) out.push(mn * i);
     return out;
@@ -289,6 +317,17 @@ function makeCalc(cfg) {
     return finish(lines, { stats: [['장당 면적', r2(real) + '㎡'], ['계산 면적', r2(area * S.qty) + '㎡']], adminStats: [['㎡당 단가', fmt(d.price) + '원']],
       cap: '면적(㎡) 기준 계산 · 장당 최소 ' + d.minArea + '㎡', warn: '실사출력은 당일 출고가 안 됩니다. 출고일은 상담 후 안내해 드립니다.', spec: d.name + ' ' + S.w + '×' + S.h + 'mm · ' + fmt(S.qty) + p.unit,
       opts: opts, perLabel: p.unit + '당', qty: S.qty });
+  }
+
+  // 사이즈별 정해진 가격 (UV DTF·캔버스): 최소 주문금액 적용 안 함
+  function calcSized(p, S) {
+    var list = cfg.sized[S.product] || [], z = list[S.sizeIdx] || list[0];
+    if (!z) return fail('선택할 수 있는 사이즈가 없습니다.');
+    if (!(S.qty > 0)) return fail('수량을 1 이상으로 입력하세요.');
+    return finish([[p.name + ' ' + z.name, fmt(S.qty) + p.unit + ' × ' + fmt(z.price), S.qty * z.price]], {
+      stats: [['사이즈', z.name], ['수량', fmt(S.qty) + p.unit]], adminStats: [['단가', fmt(z.price) + '원 (부가세 별도)']],
+      cap: '사이즈별 정해진 가격', warn: p.warn || '', spec: p.name + ' ' + z.name + ' · ' + fmt(S.qty) + p.unit,
+      opts: [z.name], perLabel: p.unit + '당', qty: S.qty }, true);
   }
 
   function calcLarge(p, S, l) {
@@ -403,6 +442,7 @@ function makeCalc(cfg) {
       if (S.qty > 0 && S.qty < mn) return fail('최소 주문 수량은 ' + fmt(mn) + p.unit + '입니다. 수량을 ' + fmt(mn) + p.unit + ' 이상으로 골라 주세요.');
       if (S.qty > 0 && S.qty % mn) return fail('수량은 ' + fmt(mn) + p.unit + ' 단위로 주문할 수 있습니다. ' + fmt(Math.floor(S.qty / mn) * mn || mn) + p.unit + ' 또는 ' + fmt(Math.ceil(S.qty / mn) * mn) + p.unit + '로 골라 주세요.');
       if (p.kind === 'wide') return calcWide(p, S);
+      if (p.kind === 'sized') return calcSized(p, S);
       if (p.kind === 'envelope') return calcEnvelope(p, S);
       if (p.kind === 'booklet') return calcBooklet(p, S);
       return calcStd(p, S);
@@ -555,6 +595,14 @@ function mount(root) {
 
   function renderForm() {
     var p = PRODUCTS[S.product], h = '<div class="pq-fields">';
+    if (p.kind === 'sized') {
+      var zl = cfg.sized[S.product] || [];
+      if (!zl[S.sizeIdx]) S.sizeIdx = 0;
+      h += select('size', '사이즈', zl.map(function (z, i) { return [i, z.name + (ADMIN ? '' : '')]; }), S.sizeIdx, 'pq-full');
+      h += qtyField('수량');
+      if (p.note || p.warn) h += '<p class="pq-note pq-full">' + (p.warn ? '<b>' + esc(p.warn) + '</b>' : '') + (p.note && p.warn ? '<br>' : '') + (p.note ? esc(p.note) : '') + '</p>';
+      form.innerHTML = h + '</div>'; return;
+    }
     if (p.kind === 'wide') {
       h += sizeFields(p);
       h += qtyField('수량');
@@ -617,7 +665,7 @@ function mount(root) {
     var t = e.target, p = PRODUCTS[S.product], sizes = C.sizesOf(p), wasLarge = !!C.largeOf(S);
     if (t.name === 'qtysel' && t.value) { var qi = form.querySelector('#pq-f-qtyin'); if (qi) qi.value = t.value; }
     if (t.name === 'qty' && ADMIN) { var qs = form.querySelector('#pq-f-qty'); if (qs) qs.value = String(+t.value); }
-    if (t.name === 'size' && t.value !== 'custom') {
+    if (t.name === 'size' && t.value !== 'custom' && $('#pq-f-w')) {
       var s = sizes[+t.value]; $('#pq-f-w').value = s[1]; $('#pq-f-h').value = s[2];
       if (s[3] !== undefined && $('#pq-f-folds')) $('#pq-f-folds').value = s[3];
     }
@@ -710,7 +758,7 @@ function mount(root) {
   function applyCfg(next) {
     cfg = next; C = makeCalc(cfg);
     var p = PRODUCTS[S.product];
-    if (p.kind !== 'envelope' && p.kind !== 'wide') {
+    if (p.kind !== 'envelope' && p.kind !== 'wide' && p.kind !== 'sized') {
       var sk = p.kind === 'sticker' ? 'sticker' : 'general';
       if (!cfg.papers.some(function (x) { return x.id === S.paper && x.sheet === sk; })) S.paper = (C.papersFor(sk)[0] || {}).id;
     }
@@ -741,7 +789,7 @@ function mount(root) {
     var b = e.target.closest('button'); if (!b) return;
     S = newState(b.getAttribute('data-p'));
     var p = PRODUCTS[S.product];
-    if (p.kind !== 'envelope' && p.kind !== 'wide') {
+    if (p.kind !== 'envelope' && p.kind !== 'wide' && p.kind !== 'sized') {
       var sk = p.kind === 'sticker' ? 'sticker' : 'general';
       if (!cfg.papers.some(function (x) { return x.id === S.paper && x.sheet === sk; })) S.paper = (C.papersFor(sk)[0] || {}).id;
       if (p.kind === 'booklet' && !cfg.papers.some(function (x) { return x.id === S.coverPaper; })) S.coverPaper = S.paper;
