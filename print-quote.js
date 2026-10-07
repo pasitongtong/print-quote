@@ -104,7 +104,7 @@ var PRODUCTS = {
     sizes: [['일반 90×50', 90, 50], ['86×52', 86, 52], ['90×55', 90, 55]] },
   sticker: { name: '스티커', kind: 'sticker', unit: '매', qty: 500, paper: 'stkArt', sides: 1, coat: false, fold: false, fins: ['stkCoat'],
     sizes: [['원형 Ø50', 50, 50], ['원형 Ø30', 30, 30], ['사각 60×40', 60, 40], ['사각 90×50', 90, 50], ['A4 통판 210×297', 210, 297]] },
-  uvdtf: { name: 'UV DTF 스티커', kind: 'sized', unit: '장', qty: 1 },
+  uvdtf: { name: 'UV DTF 스티커', kind: 'sized', unit: '장', qty: 1, warn: 'UV DTF 스티커는 당일 출고가 안 됩니다. 출고일은 상담 후 안내해 드립니다.' },
   flyer: { name: '전단', unit: '매', qty: 500, paper: 'art150', sides: 1, coat: true, fold: true, fins: [],
     sizes: [['A4 210×297', 210, 297], ['A5 148×210', 148, 210], ['B5 182×257', 182, 257], ['A3 297×420', 297, 420]] },
   brochure: { name: '브로슈어', unit: '매', qty: 300, paper: 'art150', sides: 2, coat: true, fold: true, fins: ['score'], note: '규격은 펼친 크기 기준입니다.',
