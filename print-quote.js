@@ -537,7 +537,63 @@ var CSS = [
 '.pq-btn.pq-ghost{background:transparent;color:var(--pq-ink);border-color:var(--pq-line)}',
 '.pq-status{font-size:13px;color:var(--pq-muted)}',
 '.pq textarea{width:100%;font:inherit;font-size:13px;margin-top:8px;border:1px solid var(--pq-line);border-radius:6px;padding:8px}',
-'.pq-foot{margin-top:16px;font-size:13px;color:var(--pq-muted)}'
+'.pq-foot{margin-top:16px;font-size:13px;color:var(--pq-muted)}',
+/* v9 프린트랩형: 사진 | 옵션(왼쪽 항목명) | 견적서 상자 */
+'.pq{--pq-bg:#fff;--pq-field:#fff;--pq-ink:#1f2a27;--pq-muted:#5f6b67;--pq-line:#dfe3e1;--pq-accent:#2e7d6b;--pq-soft:#e6f2ee;--pq-red:#e5484d;--pq-gray:#f5f6f5;padding:0;border-radius:0}',
+'.pq-products{flex-direction:row;flex-wrap:wrap;gap:8px 24px;padding:14px 16px;background:var(--pq-gray);border-radius:10px;margin-bottom:24px}',
+'.pq-products button{border-radius:6px;padding:6px 12px}',
+'.pq-grid{grid-template-columns:300px minmax(0,1fr) 270px;gap:28px}',
+'.pq-grid.pq-nophoto{grid-template-columns:minmax(0,1fr) 290px}',
+'.pq-photo{min-width:0}',
+'.pq-photo img{display:block;width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:12px;background:var(--pq-gray)}',
+'.pq-photo p{font-size:13px;color:var(--pq-muted);margin-top:10px}',
+'.pq-mid{min-width:0}',
+'.pq-title{font-size:24px;font-weight:700;margin:0 0 6px;padding-bottom:14px;border-bottom:2px solid var(--pq-ink);letter-spacing:-.02em}',
+'.pq-mid .pq-panel{border:0;border-radius:0;padding:0}',
+'.pq-mid .pq-fields{grid-template-columns:minmax(0,1fr);gap:0}',
+'.pq-mid .pq-field{display:grid;grid-template-columns:96px minmax(0,1fr);gap:4px 12px;align-items:center;padding:11px 0;border-bottom:1px solid var(--pq-line)}',
+'.pq-mid .pq-field>small{grid-column:2}',
+'.pq-mid .pq-lbl{font-size:14px;font-weight:700;color:var(--pq-ink)}',
+'.pq-mid .pq-note{margin:12px 0 0}',
+'.pq-mid select,.pq-mid input[type=number]{max-width:340px;border-radius:4px}',
+'.pq-mid .pq-pair input[type=number]{max-width:120px}',
+'.pq-seg span{border-radius:4px;background:#fff}',
+'.pq-seg input:checked+span{background:var(--pq-ink);border-color:var(--pq-ink);color:#fff}',
+'.pq-cnt{display:inline-flex;align-items:center;gap:6px;margin-left:4px;font-size:14px;color:var(--pq-muted)}',
+'.pq .pq-cnt select{width:auto;min-width:76px}',
+'.pq-order{display:grid;grid-template-columns:96px minmax(0,1fr);gap:4px 12px;align-items:baseline;padding:18px 0 6px}',
+'.pq-order .pq-lbl{font-size:14px;font-weight:700;color:var(--pq-ink)}',
+'.pq-order strong{font-size:30px;font-weight:700;color:var(--pq-red);font-variant-numeric:tabular-nums;letter-spacing:-.02em}',
+'.pq-order strong span{font-size:17px;margin-left:2px}',
+'.pq-order em{font-style:normal;font-size:14px;color:var(--pq-ink);margin-left:12px;font-variant-numeric:tabular-nums}',
+'.pq-ship{grid-column:2;font-size:13px;color:var(--pq-muted)}',
+'.pq-ship b{color:var(--pq-accent)}.pq .pq-no{color:#b3541e}',
+'.pq-big{grid-column:1/-1;display:flex;gap:10px;margin-top:14px}',
+'.pq-big button{flex:1;font:inherit;font-size:16px;font-weight:700;padding:15px 0;border:0;border-radius:6px;cursor:pointer;margin:0}',
+'.pq-big .pq-print{background:var(--pq-ink);color:#fff}',
+'.pq-big .pq-copy{background:var(--pq-red);color:#fff}',
+'.pq-big button:hover{filter:brightness(1.12)}',
+'.pq-big+.pq-status{grid-column:1/-1}',
+'.pq-est{border:1px solid var(--pq-line);border-radius:10px;background:#fff;overflow:hidden}',
+'.pq-est h3{margin:0;font-size:16px;text-align:center;padding:13px 0;border-bottom:1px solid var(--pq-line)}',
+'.pq-est section{padding:12px 16px;border-bottom:1px solid var(--pq-line)}',
+'.pq-est dl{display:grid;grid-template-columns:44px minmax(0,1fr);gap:4px 8px;margin:0;font-size:13px}',
+'.pq-est dt{color:var(--pq-muted)}.pq-est dd{margin:0;word-break:keep-all}',
+'.pq-est table{width:100%;border-collapse:collapse;font-size:13px}',
+'.pq-est th{font-weight:400;color:var(--pq-muted);text-align:left;padding:3px 0;border:0;background:none}',
+'.pq-est td{text-align:right;padding:3px 0;border:0;background:none;font-variant-numeric:tabular-nums}',
+'.pq-est tr.pq-tot th,.pq-est tr.pq-tot td{font-size:15px;font-weight:700;color:var(--pq-ink);padding-top:6px}',
+'.pq-est tr.pq-tot td{color:var(--pq-red);font-size:19px}',
+'.pq-est .pq-warn{padding:0 16px 12px;margin:0}',
+'.pq-est .pq-btns{margin:0;padding:12px 16px;display:grid;grid-template-columns:1fr 1fr;gap:6px}',
+'.pq-est .pq-btn{font-size:13px;padding:9px 0}',
+'.pq-est .pq-btn.pq-ghost{background:#8a9390;border-color:#8a9390;color:#fff}',
+'.pq-est .pq-status,.pq-est textarea{grid-column:1/-1}',
+'.pq-contact{border:1px solid var(--pq-line);border-radius:10px;padding:14px 16px;font-size:13px;color:var(--pq-muted)}',
+'.pq-contact b{display:block;font-size:15px;color:var(--pq-ink)}.pq-contact strong{display:block;font-size:22px;color:var(--pq-ink);margin:2px 0}',
+'@media (max-width:1100px){.pq-grid{grid-template-columns:240px minmax(0,1fr) 250px;gap:20px}}',
+'@media (max-width:960px){.pq-grid,.pq-grid.pq-nophoto{grid-template-columns:minmax(0,1fr)}.pq-photo{display:grid;grid-template-columns:120px minmax(0,1fr);gap:14px;align-items:center}.pq-photo p{margin:0}}',
+'@media (max-width:540px){.pq-mid .pq-field,.pq-order{grid-template-columns:72px minmax(0,1fr)}.pq-order strong{font-size:26px}.pq-order em{display:block;margin:0}.pq-products{padding:12px}}'
 ].join('\n');
 
 function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
@@ -545,15 +601,30 @@ function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&
 function mount(root) {
   var ADMIN = root.getAttribute('data-mode') === 'admin';
   var url = (root.getAttribute('data-sheet') || '').trim();
+  // v9: 상품 사진 폴더(data-img, 파일 이름 = 상품코드.jpg), 견적서 공급자 정보(data-biz-*), 고객 화면 항목별 금액(data-breakdown="off" 면 숨김)
+  var IMG = (root.getAttribute('data-img') || '').trim(), HASIMG = !!(IMG || window.PQ_IMG), BREAKDOWN = root.getAttribute('data-breakdown') !== 'off';
+  var BIZ = {}; ['name', 'no', 'ceo', 'addr', 'tel', 'kakao', 'email'].forEach(function (k) { BIZ[k] = (root.getAttribute('data-biz-' + k) || '').trim(); });
+  if (!BIZ.name) BIZ.name = '업드림'; if (!BIZ.tel) BIZ.tel = '1661-8725'; if (!BIZ.kakao) BIZ.kakao = '78updream';
   var cfg = clone(DEFAULTS), C = makeCalc(cfg), S = newState('namecard'), last = null;
 
   root.innerHTML = '<div class="pq">' +
     '<div class="pq-notice" hidden></div>' +
     '<div class="pq-products" role="group" aria-label="상품 선택"></div>' +
-    '<div class="pq-grid"><form class="pq-panel" autocomplete="off"></form><div class="pq-result" aria-live="polite"></div></div>' +
+    '<div class="pq-grid' + (HASIMG ? '' : ' pq-nophoto') + '">' + (HASIMG ? '<div class="pq-photo"><img alt=""><p></p></div>' : '') +
+    '<div class="pq-mid"><h3 class="pq-title"></h3><form class="pq-panel" autocomplete="off"></form><div class="pq-order" aria-live="polite"></div></div>' +
+    '<div class="pq-result" aria-live="polite"></div></div>' +
     '<p class="pq-foot">표시 금액은 예상 견적입니다. 실제 금액은 인쇄 파일 확인 후 달라질 수 있으니 주문 전 꼭 문의해 주세요.</p></div>';
   var $ = function (s) { return root.querySelector(s); };
-  var form = $('form'), result = $('.pq-result'), products = $('.pq-products'), notice = $('.pq-notice');
+  var form = $('form'), result = $('.pq-result'), products = $('.pq-products'), notice = $('.pq-notice'), order = $('.pq-order');
+  function photoOf(k) { return (window.PQ_IMG && window.PQ_IMG[k]) || (IMG ? IMG + k + '.jpg' : ''); }
+  // 당일 출고 안내 (사용자 확인: 실사출력·UV DTF·캔버스·대형 출력은 당일 출고 불가, 그 외 오전 접수 시 당일 출고)
+  function sameDay(r) { var p = PRODUCTS[S.product]; return !(p.kind === 'wide' || p.kind === 'sized' || C.largeOf(S) || (r && /당일 출고가 안/.test(r.warn || ''))); }
+  function shipHtml(r) { return sameDay(r) ? '<b>당일 출고 가능</b> · 오전 접수·파일 확인 후 (상담 시 확정)' : '<b class="pq-no">당일 출고 불가</b> · 출고일은 상담 후 안내'; }
+  function renderHead() {
+    var p = PRODUCTS[S.product], im = $('.pq-photo img');
+    $('.pq-title').textContent = p.name;
+    if (im) { var src = photoOf(S.product); im.hidden = !src; if (src) { im.src = src; im.alt = p.name; } }
+  }
 
   function renderProducts() {
     products.innerHTML = GROUPS.map(function (g) {
@@ -587,9 +658,10 @@ function mount(root) {
     var sel = '<select id="pq-f-qty" name="' + (ADMIN ? 'qtysel' : 'qty') + '">' +
       (opts.indexOf(S.qty) < 0 ? '<option value="" selected>직접 입력 ' + fmt(S.qty) + p.unit + '</option>' : '') +
       opts.map(function (q) { return '<option value="' + q + '"' + (q === S.qty ? ' selected' : '') + '>' + fmt(q) + p.unit + '</option>'; }).join('') + '</select>';
+    var cnt = '<label class="pq-cnt">×<select name="count" aria-label="건수 (같은 사양, 디자인 개수)">' + [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(function (c) { return '<option value="' + c + '"' + (c === (S.count || 1) ? ' selected' : '') + '>' + c + '건</option>'; }).join('') + '</select></label>';
     return '<div class="pq-field pq-full"><label class="pq-lbl" for="pq-f-qty">' + label + '</label><div class="pq-qty">' + sel +
-      (ADMIN ? '<input type="number" id="pq-f-qtyin" name="qty" min="' + mn + '" step="' + mn + '" value="' + S.qty + '" inputmode="numeric" aria-label="수량 직접 입력">' : '') +
-      '</div><small>' + fmt(mn) + p.unit + ' 단위 · 최대 ' + fmt(mx) + p.unit + (ADMIN ? ' (관리자는 더 큰 수량도 직접 입력 가능)' : ' · 더 많은 수량은 상담해 주세요') + '</small></div>';
+      (ADMIN ? '<input type="number" id="pq-f-qtyin" name="qty" min="' + mn + '" step="' + mn + '" value="' + S.qty + '" inputmode="numeric" aria-label="수량 직접 입력">' : '') + cnt +
+      '</div><small>' + fmt(mn) + p.unit + ' 단위 · 최대 ' + fmt(mx) + p.unit + (ADMIN ? ' (관리자는 더 큰 수량도 직접 입력 가능)' : ' · 더 많은 수량은 상담해 주세요') + ' · 건 = 같은 사양의 디자인 개수</small></div>';
   }
   function paperOpts(sheet) { return C.papersFor(sheet).map(function (x) { return [x.id, x.name]; }); }
 
@@ -654,6 +726,7 @@ function mount(root) {
     var fd = new FormData(form), n = function (k) { return Number(fd.get(k)); }, p = PRODUCTS[S.product];
     if (fd.has('size')) S.sizeIdx = fd.get('size') === 'custom' ? 'custom' : n('size');
     if (fd.has('w')) { S.w = n('w'); S.h = n('h'); }
+    if (fd.has('count')) S.count = n('count') || 1;
     ['qty', 'sides', 'coat', 'folds', 'env', 'pages', 'coverSides'].forEach(function (k) { if (fd.has(k)) S[k] = n(k); });
     ['paper', 'color', 'cut', 'binding', 'coverPaper'].forEach(function (k) { if (fd.has(k)) S[k] = fd.get(k); });
     if (p.kind === 'booklet' && S.binding !== 'perfect') { var cb = form.querySelector('[name=sepCover]'); S.sepCover = !!(cb && cb.checked); }
@@ -680,46 +753,121 @@ function mount(root) {
     renderResult();
   }
 
+  // 건수(같은 사양 n건)를 곱한 금액
+  function tot(r) { var k = S.count || 1, sub = r.sub * k, vat = Math.round(sub * cfg.vat / 100); return { k: k, sub: sub, vat: vat, total: sub + vat }; }
+  // 고객용 항목 묶음 (프린트랩식 용지비·인쇄비…) — 계산식·판걸이는 보이지 않음
+  function groupLines(r) {
+    var kd = PRODUCTS[S.product].kind, g = { paper: 0, print: 0, fin: 0, base: 0 }, sum = 0;
+    r.lines.forEach(function (l, i) {
+      var n = l[0], key = /용지$|^봉투$/.test(n) ? 'paper'
+        : (/^(인쇄|내지 인쇄|표지 인쇄)$|출력$/.test(n) || (i === 0 && (kd === 'wide' || kd === 'sized'))) ? 'print'
+        : /^(재단|작업 기본료|판비|최소 주문금액 보정)$/.test(n) ? 'base' : 'fin';
+      g[key] += l[2]; sum += l[2];
+    });
+    g.base += r.sub - sum;   // 100원 올림 차이
+    var k = S.count || 1;
+    return [['용지비', g.paper], [kd === 'wide' || kd === 'sized' ? '출력비' : '인쇄비', g.print], ['후가공비', g.fin], ['기본 작업비', g.base]]
+      .filter(function (x) { return Math.round(x[1]) > 0; }).map(function (x) { return [x[0], x[1] * k]; });
+  }
+  function renderOrder(r) {
+    var T = r.ok ? tot(r) : null;
+    order.innerHTML = '<span class="pq-lbl">출고</span><span class="pq-ship">' + shipHtml(r.ok ? r : null) + '</span>' +
+      '<span class="pq-lbl">주문금액</span><div>' + (T ? '<strong>' + fmt(T.total) + '<span>원</span></strong><em>공급가 : ' + fmt(T.sub) + '원</em><em>부가세 : ' + fmt(T.vat) + '원</em>' : '<strong>-</strong>') + '</div>' +
+      '<div class="pq-big"><button type="button" class="pq-print" data-act="print"' + (T ? '' : ' disabled') + '>견적서 인쇄</button><button type="button" class="pq-copy" data-act="copy"' + (T ? '' : ' disabled') + '>견적 복사 · 상담하기</button></div>' +
+      '<span class="pq-status"></span><textarea rows="6" hidden aria-label="견적 내용"></textarea>';
+  }
+
   function renderResult() {
     var r = C.run(S); last = r;
-    if (!r.ok) { result.innerHTML = '<div class="pq-panel"><p class="pq-eyebrow">예상 견적</p><div class="pq-err">' + esc(r.msg) + '</div></div>'; return; }
-    var per = r.total / r.qty, stats = r.stats.concat(ADMIN ? r.adminStats : []);
+    renderHead(); renderOrder(r);
+    if (!r.ok) { result.innerHTML = '<div class="pq-est"><h3>견적서</h3><section><div class="pq-err">' + esc(r.msg) + '</div></section></div>'; return; }
+    var per = r.total / r.qty, stats = r.stats.concat(ADMIN ? r.adminStats : []), T = tot(r);
     if (!ADMIN) {
       result.innerHTML =
-        '<div class="pq-panel"><p class="pq-eyebrow">예상 견적 · 부가세 포함</p><div class="pq-total">' + fmt(r.total) + '<span>원</span></div>' +
-        '<div class="pq-sub">공급가 ' + fmt(r.sub) + '원 · 부가세 ' + fmt(r.vat) + '원 · ' + r.perLabel + ' ' + (per < 100 ? per.toFixed(1) : fmt(per)) + '원</div>' +
-        (r.warn ? '<p class="pq-warn">' + esc(r.warn) + '</p>' : '') + '</div>' +
-        '<div class="pq-panel"><p class="pq-eyebrow">주문 내용</p><p class="pq-spec">' + esc(r.spec) + '</p><ul class="pq-opts">' +
-        r.opts.map(function (o) { return '<li>' + esc(o) + '</li>'; }).join('') + '</ul>' +
-        '<div class="pq-btns"><button type="button" class="pq-btn" data-act="copy">견적 내용 복사</button><span class="pq-status"></span></div>' +
-        '<textarea rows="8" hidden aria-label="견적 내용"></textarea></div>';
+        '<div class="pq-est"><h3>견적서</h3><section><dl><dt>상품</dt><dd>' + esc(PRODUCTS[S.product].name) + '</dd><dt>사양</dt><dd>' + esc(r.spec.replace(/^\S+\s/, '')) + '</dd>' +
+        '<dt>옵션</dt><dd>' + esc(r.opts.join(', ')) + '</dd><dt>건수</dt><dd>' + T.k + '건</dd></dl></section>' +
+        '<section><table><tbody>' + (BREAKDOWN ? groupLines(r).map(function (x) { return '<tr><th>' + x[0] + '</th><td>' + fmt(x[1]) + '</td></tr>'; }).join('') : '') +
+        '<tr><th>공급가</th><td>' + fmt(T.sub) + '원</td></tr><tr><th>부가세</th><td>' + fmt(T.vat) + '원</td></tr>' +
+        '<tr class="pq-tot"><th>합계</th><td>' + fmt(T.total) + '원</td></tr></tbody></table>' +
+        '<p class="pq-sub">' + r.perLabel + ' ' + (per < 100 ? per.toFixed(1) : fmt(per)) + '원 (부가세 포함) · 배송비 별도</p></section>' +
+        (r.warn ? '<p class="pq-warn" style="padding-top:12px">' + esc(r.warn) + '</p>' : '') +
+        '<div class="pq-btns"><button type="button" class="pq-btn pq-ghost" data-act="print">견적서 인쇄</button><button type="button" class="pq-btn" data-act="copy">내용 복사</button>' +
+        '<span class="pq-status"></span><textarea rows="6" hidden aria-label="견적 내용"></textarea></div></div>' +
+        '<div class="pq-contact"><b>상담·파일 접수</b><strong>' + esc(BIZ.tel) + '</strong>카카오톡 ' + esc(BIZ.kakao) + '</div>';
       return;
     }
     result.innerHTML =
-      '<div class="pq-panel"><p class="pq-eyebrow">예상 견적 · 부가세 포함</p><div class="pq-total">' + fmt(r.total) + '<span>원</span></div>' +
-      '<div class="pq-sub">공급가 ' + fmt(r.sub) + '원 · 부가세 ' + fmt(r.vat) + '원 · ' + r.perLabel + ' ' + (per < 100 ? per.toFixed(1) : fmt(per)) + '원</div></div>' +
+      '<div class="pq-panel"><p class="pq-eyebrow">예상 견적 · 부가세 포함</p><div class="pq-total">' + fmt(T.total) + '<span>원</span></div>' +
+      '<div class="pq-sub">공급가 ' + fmt(T.sub) + '원 · 부가세 ' + fmt(T.vat) + '원 · ' + r.perLabel + ' ' + (per < 100 ? per.toFixed(1) : fmt(per)) + '원' + (T.k > 1 ? ' · 1건 공급가 ' + fmt(r.sub) + '원 × ' + T.k + '건' : '') + '</div></div>' +
       '<div class="pq-panel"><div class="pq-imp"><div>' + (r.imp || r.env ? '<canvas aria-label="판걸이 배치도"></canvas>' : '') + '</div><dl class="pq-stats">' +
       stats.map(function (s) { return '<div><dt>' + s[0] + '</dt><dd>' + s[1] + '</dd></div>'; }).join('') + '</dl></div>' +
       '<p class="pq-cap">' + esc(r.cap) + '</p>' + (r.warn ? '<p class="pq-warn">' + esc(r.warn) + '</p>' : '') + '</div>' +
       '<div class="pq-panel"><table class="pq-lines"><tbody>' +
       r.lines.map(function (l) { return '<tr><td>' + esc(l[0]) + (ADMIN && l[1] ? '<span class="pq-d">' + esc(l[1]) + '</span>' : '') + '</td><td>' + fmt(l[2]) + '</td></tr>'; }).join('') +
       '<tr class="pq-sum"><td>공급가</td><td>' + fmt(r.sub) + '</td></tr></tbody></table>' +
-      '<div class="pq-btns"><button type="button" class="pq-btn" data-act="copy">견적 내용 복사</button>' +
+      '<div class="pq-btns"><button type="button" class="pq-btn" data-act="copy">견적 내용 복사</button><button type="button" class="pq-btn pq-ghost" data-act="print">견적서 인쇄</button>' +
       (ADMIN ? '<button type="button" class="pq-btn pq-ghost" data-act="reload">단가 다시 불러오기</button>' : '') +
       '<span class="pq-status"></span></div><textarea rows="8" hidden aria-label="견적 내용"></textarea></div>';
     draw(r);
   }
 
   function quoteText(r) {
-    if (!ADMIN) return ['[업드림 견적] ' + r.spec, '옵션: ' + r.opts.join(' / '), '공급가 ' + fmt(r.sub) + '원 / 부가세 ' + fmt(r.vat) + '원', '합계 ' + fmt(r.total) + '원'].join('\n');
-    return ['[견적] ' + r.spec, '옵션: ' + r.opts.join(' / ')]
+    var T = tot(r), cnt = T.k > 1 ? ' × ' + T.k + '건' : '';
+    if (!ADMIN) return ['[' + BIZ.name + ' 견적] ' + r.spec + cnt, '옵션: ' + r.opts.join(' / '),
+      '공급가 ' + fmt(T.sub) + '원 / 부가세 ' + fmt(T.vat) + '원', '합계 ' + fmt(T.total) + '원 (배송비 별도)'].join('\n');
+    return ['[견적] ' + r.spec + cnt, '옵션: ' + r.opts.join(' / ')]
       .concat(r.lines.map(function (l) { return '- ' + l[0] + ': ' + fmt(l[2]) + '원'; }))
-      .concat(['공급가 ' + fmt(r.sub) + '원 / 부가세 ' + fmt(r.vat) + '원', '합계 ' + fmt(r.total) + '원']).join('\n');
+      .concat(T.k > 1 ? ['1건 공급가 ' + fmt(r.sub) + '원 × ' + T.k + '건'] : [])
+      .concat(['공급가 ' + fmt(T.sub) + '원 / 부가세 ' + fmt(T.vat) + '원', '합계 ' + fmt(T.total) + '원']).join('\n');
   }
-  function copyQuote() {
-    var txt = quoteText(last), st = result.querySelector('.pq-status'), fb = result.querySelector('textarea');
+  function copyQuote(scope) {
+    var txt = quoteText(last), st = scope.querySelector('.pq-status'), fb = scope.querySelector('textarea');
     function fallback() { fb.hidden = false; fb.value = txt; fb.select(); st.textContent = '아래 내용을 선택해 복사하세요.'; }
-    try { navigator.clipboard.writeText(txt).then(function () { st.textContent = '복사했습니다. 문의할 때 붙여넣어 주세요.'; }, fallback); } catch (e) { fallback(); }
+    try { navigator.clipboard.writeText(txt).then(function () { st.textContent = '복사했습니다. 카카오톡 ' + BIZ.kakao + ' 로 파일과 함께 보내 주세요.'; }, fallback); } catch (e) { fallback(); }
+  }
+  // 견적서 인쇄 (프린트랩 견적서 서식 참고: 수신자 | 공급자 → 합계 띠 → 주문 사양 → 금액표 → 안내 → 비고)
+  function printQuote() {
+    var r = last; if (!r || !r.ok) return;
+    var T = tot(r), p = PRODUCTS[S.product], d = new Date(), days = +(root.getAttribute('data-valid-days') || 7);
+    var today = d.getFullYear() + '년 ' + (d.getMonth() + 1) + '월 ' + d.getDate() + '일';
+    var rows = ADMIN ? r.lines.map(function (l) { return [l[0], l[2] * T.k]; }) : (BREAKDOWN ? groupLines(r) : []);
+    var biz = [['상호', BIZ.name], ['사업자번호', BIZ.no], ['대표', BIZ.ceo], ['주소', BIZ.addr], ['전화', BIZ.tel], ['카카오톡', BIZ.kakao], ['이메일', BIZ.email]]
+      .filter(function (x) { return x[1]; });
+    var inp = function (lbl) { return '<input aria-label="' + lbl + '">'; };
+    var h = '<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>견적서 - ' + esc(BIZ.name) + '</title><style>' +
+      'body{font-family:"Malgun Gothic","Apple SD Gothic Neo","Noto Sans KR",sans-serif;color:#1f2a27;margin:0;padding:28px;font-size:13px;background:#fff}' +
+      '.w{max-width:760px;margin:0 auto}h1{text-align:center;font-size:30px;letter-spacing:.3em;margin:0 0 18px;padding-bottom:14px;border-bottom:2px solid #1f2a27}' +
+      '.two{display:grid;grid-template-columns:1fr 1fr;gap:20px}h2{font-size:14px;margin:0 0 6px}' +
+      'table{width:100%;border-collapse:collapse}th,td{border:1px solid #cfd5d2;padding:7px 9px;text-align:left;vertical-align:middle}th{background:#f1f3f2;font-weight:600;width:88px;white-space:nowrap}' +
+      'input,textarea{font:inherit;border:1px solid #cfd5d2;border-radius:3px;padding:4px 6px;width:100%;box-sizing:border-box}textarea{height:60px;resize:vertical}' +
+      '.lead{margin:20px 0 6px}.band{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;background:#f1f3f2;padding:14px 18px;font-size:14px}' +
+      '.band b{color:#2e7d6b}.band strong{font-size:18px}.band strong span{color:#e5484d}h3{font-size:15px;margin:22px 0 8px}' +
+      '.num{text-align:right;font-variant-numeric:tabular-nums}.sum th,.sum td{font-weight:700;font-size:15px}.sum td{color:#e5484d}' +
+      'ul{margin:10px 0 0;padding-left:16px;color:#5f6b67;line-height:1.7}.bar{text-align:center;margin-top:22px}' +
+      '.bar button{font:inherit;font-size:14px;font-weight:700;padding:10px 26px;border-radius:4px;border:1px solid #1f2a27;background:#fff;cursor:pointer;margin:0 4px}.bar .pr{background:#1f2a27;color:#fff}' +
+      '@media print{body{padding:0}.bar{display:none}input,textarea{border:0;padding:0}}' +
+      '@media (max-width:600px){.two{grid-template-columns:1fr}}' +
+      '</style></head><body><div class="w"><h1>견적서</h1><div class="two">' +
+      '<div><h2>수신자</h2><table><tr><th>견적일</th><td>' + today + '</td></tr><tr><th>고객명</th><td>' + inp('고객명') + '</td></tr>' +
+      '<tr><th>연락처</th><td>' + inp('연락처') + '</td></tr><tr><th>이메일</th><td>' + inp('이메일') + '</td></tr>' +
+      '<tr><th>유효기간</th><td>견적일로부터 ' + days + '일 이내</td></tr></table></div>' +
+      '<div><h2>공급자</h2><table>' + biz.map(function (x) { return '<tr><th>' + x[0] + '</th><td>' + esc(x[1]) + '</td></tr>'; }).join('') + '</table></div></div>' +
+      '<p class="lead">아래와 같이 견적합니다.</p><div class="band"><span>공급가액 <b>' + fmt(T.sub) + '</b>원 + 세액 <b>' + fmt(T.vat) + '</b>원 + 배송비 별도</span>' +
+      '<strong>총 합계금액 : <span>' + fmt(T.total) + '</span>원</strong></div>' +
+      '<h3>[ ' + esc(p.name) + ' ]</h3><table><tr><th>사양</th><td colspan="3">' + esc(r.spec) + '</td></tr>' +
+      '<tr><th>옵션</th><td colspan="3">' + esc(r.opts.join(', ')) + '</td></tr>' +
+      '<tr><th>수량</th><td>' + fmt(r.qty) + p.unit + '</td><th>건수</th><td>' + T.k + '건</td></tr>' +
+      '<tr><th>출고</th><td colspan="3">' + shipHtml(r).replace(/<[^>]+>/g, '') + '</td></tr></table>' +
+      '<h3>금액</h3><table>' + rows.map(function (x) { return '<tr><th>' + esc(x[0]) + '</th><td class="num">' + fmt(x[1]) + '원</td></tr>'; }).join('') +
+      '<tr><th>공급가액</th><td class="num">' + fmt(T.sub) + '원</td></tr><tr><th>세액(VAT)</th><td class="num">' + fmt(T.vat) + '원</td></tr>' +
+      '<tr><th>배송비</th><td class="num">별도</td></tr><tr class="sum"><th>합계액</th><td class="num">' + fmt(T.total) + '원</td></tr></table>' +
+      '<ul><li>본 견적은 예상 금액이며, 인쇄 파일 확인 후 사양에 따라 달라질 수 있습니다.</li><li>배송비는 별도입니다.</li>' +
+      '<li>디자인 파일을 보내 주시면 확인 후 출력합니다. (카카오톡 ' + esc(BIZ.kakao) + ')</li>' + (r.warn ? '<li>' + esc(r.warn) + '</li>' : '') + '</ul>' +
+      '<h3>비고</h3><textarea aria-label="비고"></textarea>' +
+      '<div class="bar"><button class="pr" onclick="window.print()">인쇄</button><button onclick="window.close()">창닫기</button></div></div></body></html>';
+    var w = window.open('', 'pq_estimate', 'width=860,height=1000,scrollbars=yes');
+    if (!w) { alert('팝업이 막혀 있어 견적서를 열 수 없습니다. 브라우저에서 팝업을 허용해 주세요.'); return; }
+    w.document.open(); w.document.write(h); w.document.close(); w.focus();
   }
 
   function draw(r) {
@@ -799,11 +947,14 @@ function mount(root) {
   form.addEventListener('submit', function (e) { e.preventDefault(); });
   form.addEventListener('input', onForm);
   form.addEventListener('change', onForm);
-  result.addEventListener('click', function (e) {
+  function onAct(e) {
     var b = e.target.closest('button'); if (!b) return;
-    if (b.getAttribute('data-act') === 'copy') copyQuote();
+    if (b.getAttribute('data-act') === 'copy') copyQuote(b.closest('.pq-est, .pq-panel, .pq-order'));
+    if (b.getAttribute('data-act') === 'print') printQuote();
     if (b.getAttribute('data-act') === 'reload') load();
-  });
+  }
+  result.addEventListener('click', onAct);
+  order.addEventListener('click', onAct);
 
   renderProducts(); renderForm(); renderResult(); load();
 }
